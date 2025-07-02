@@ -1,0 +1,9 @@
+ktor:
+  application:
+    modules:
+      - pl.pietrzak.ApplicationKt.module
+  deployment:
+    port: 8080
+  github:
+    clientId: Your-client-id
+    clientSecret: Your-client-secret
