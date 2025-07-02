@@ -24,6 +24,7 @@ fun Routing.githubWebhookRoute() {
         if (event != "pull_request") return@post call.respond(HttpStatusCode.OK)
 
         val payload = call.receiveText()
+        println("payload")
         val json = Json.decodeFromString<GitHubPullRequestPayload>(payload)
 
         if (json.action == "opened" || json.action == "synchronize") {
