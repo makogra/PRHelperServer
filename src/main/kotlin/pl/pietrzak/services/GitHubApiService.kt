@@ -5,8 +5,9 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import pl.pietrzak.auth.GitHubUser
+import pl.pietrzak.entity.github.User
 
 class GitHubApiService(
     private val clientId: String,
@@ -28,10 +29,10 @@ class GitHubApiService(
         }
 
         val tokenResponse: GitHubAccessTokenResponse = response.body()
-        return tokenResponse.access_token
+        return tokenResponse.accessToken
     }
 
-    suspend fun fetchAuthenticatedUser(accessToken: String): GitHubUser {
+    suspend fun fetchAuthenticatedUser(accessToken: String): User {
         return httpClient.get("https://api.github.com/user") {
             headers {
                 append(HttpHeaders.Authorization, "Bearer $accessToken")
@@ -52,7 +53,7 @@ class GitHubApiService(
 
 @Serializable
 data class GitHubAccessTokenResponse(
-    val access_token: String,
+    @SerialName("access_token") val accessToken: String,
     val scope: String,
-    val token_type: String
+    @SerialName("token_type") val tokenType: String
 )

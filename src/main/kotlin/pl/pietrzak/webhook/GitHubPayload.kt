@@ -33,5 +33,11 @@ data class Base(
 
 @Serializable
 data class Repository(
-    val full_name: String
+    val name: String,
+    val owner: Owner
+)
+
+@Serializable
+data class Owner(
+    val login: String
 )
