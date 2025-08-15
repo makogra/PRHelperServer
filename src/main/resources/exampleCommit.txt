@@ -1,0 +1,35 @@
+{
+  "sha": "d321d7207a4633aa00e16c123c7288db6e3a3480",
+  "node_id": "C_kwDOPFf2fNoAKGQzMjFkNzIwN2E0NjMzYWEwMGUxNmMxMjNjNzI4OGRiNmUzYTM0ODA",
+  "url": "https://api.github.com/repos/makogra/PRHelperServer/git/commits/d321d7207a4633aa00e16c123c7288db6e3a3480",
+  "html_url": "https://github.com/makogra/PRHelperServer/commit/d321d7207a4633aa00e16c123c7288db6e3a3480",
+  "author": {
+    "name": "Maciej Pietrzak",
+    "email": "pietrzak.maciek.pv@gmail.com",
+    "date": "2025-07-03T11:40:56Z"
+  },
+  "committer": {
+    "name": "Maciej Pietrzak",
+    "email": "pietrzak.maciek.pv@gmail.com",
+    "date": "2025-07-03T11:40:56Z"
+  },
+  "tree": {
+    "sha": "3f7c2b8639e32bbbebceced0fd48c3b64cb463c0",
+    "url": "https://api.github.com/repos/makogra/PRHelperServer/git/trees/3f7c2b8639e32bbbebceced0fd48c3b64cb463c0"
+  },
+  "message": "improve logs",
+  "parents": [
+    {
+      "sha": "a3d334c272f904217ab09a9992a638fe638bda98",
+      "url": "https://api.github.com/repos/makogra/PRHelperServer/git/commits/a3d334c272f904217ab09a9992a638fe638bda98",
+      "html_url": "https://github.com/makogra/PRHelperServer/commit/a3d334c272f904217ab09a9992a638fe638bda98"
+    }
+  ],
+  "verification": {
+    "verified": false,
+    "reason": "unsigned",
+    "signature": null,
+    "payload": null,
+    "verified_at": null
+  }
+}

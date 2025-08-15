@@ -1,0 +1,84 @@
+[
+  {
+    "sha": "d321d7207a4633aa00e16c123c7288db6e3a3480",
+    "node_id": "C_kwDOPFf2fNoAKGQzMjFkNzIwN2E0NjMzYWEwMGUxNmMxMjNjNzI4OGRiNmUzYTM0ODA",
+    "commit": {
+      "author": {
+        "name": "Maciej Pietrzak",
+        "email": "pietrzak.maciek.pv@gmail.com",
+        "date": "2025-07-03T11:40:56Z"
+      },
+      "committer": {
+        "name": "Maciej Pietrzak",
+        "email": "pietrzak.maciek.pv@gmail.com",
+        "date": "2025-07-03T11:40:56Z"
+      },
+      "message": "improve logs",
+      "tree": {
+        "sha": "3f7c2b8639e32bbbebceced0fd48c3b64cb463c0",
+        "url": "https://api.github.com/repos/makogra/PRHelperServer/git/trees/3f7c2b8639e32bbbebceced0fd48c3b64cb463c0"
+      },
+      "url": "https://api.github.com/repos/makogra/PRHelperServer/git/commits/d321d7207a4633aa00e16c123c7288db6e3a3480",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/makogra/PRHelperServer/commits/d321d7207a4633aa00e16c123c7288db6e3a3480",
+    "html_url": "https://github.com/makogra/PRHelperServer/commit/d321d7207a4633aa00e16c123c7288db6e3a3480",
+    "comments_url": "https://api.github.com/repos/makogra/PRHelperServer/commits/d321d7207a4633aa00e16c123c7288db6e3a3480/comments",
+    "author": {
+      "login": "makogra",
+      "id": 55946771,
+      "node_id": "MDQ6VXNlcjU1OTQ2Nzcx",
+      "avatar_url": "https://avatars.githubusercontent.com/u/55946771?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/makogra",
+      "html_url": "https://github.com/makogra",
+      "followers_url": "https://api.github.com/users/makogra/followers",
+      "following_url": "https://api.github.com/users/makogra/following{/other_user}",
+      "gists_url": "https://api.github.com/users/makogra/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/makogra/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/makogra/subscriptions",
+      "organizations_url": "https://api.github.com/users/makogra/orgs",
+      "repos_url": "https://api.github.com/users/makogra/repos",
+      "events_url": "https://api.github.com/users/makogra/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/makogra/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "committer": {
+      "login": "makogra",
+      "id": 55946771,
+      "node_id": "MDQ6VXNlcjU1OTQ2Nzcx",
+      "avatar_url": "https://avatars.githubusercontent.com/u/55946771?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/makogra",
+      "html_url": "https://github.com/makogra",
+      "followers_url": "https://api.github.com/users/makogra/followers",
+      "following_url": "https://api.github.com/users/makogra/following{/other_user}",
+      "gists_url": "https://api.github.com/users/makogra/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/makogra/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/makogra/subscriptions",
+      "organizations_url": "https://api.github.com/users/makogra/orgs",
+      "repos_url": "https://api.github.com/users/makogra/repos",
+      "events_url": "https://api.github.com/users/makogra/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/makogra/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "parents": [
+      {
+        "sha": "a3d334c272f904217ab09a9992a638fe638bda98",
+        "url": "https://api.github.com/repos/makogra/PRHelperServer/commits/a3d334c272f904217ab09a9992a638fe638bda98",
+        "html_url": "https://github.com/makogra/PRHelperServer/commit/a3d334c272f904217ab09a9992a638fe638bda98"
+      }
+    ]
+  }
+]
