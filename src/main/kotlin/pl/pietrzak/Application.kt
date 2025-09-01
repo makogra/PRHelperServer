@@ -37,8 +37,8 @@ fun main2() {
 }
 
 fun Application.mainModule() {
-    val clientId = System.getenv("GITHUB_CLIENT_ID") ?: error("GITHUB_CLIENT_ID not set")
-    val clientSecret = System.getenv("GITHUB_CLIENT_SECRET") ?: error("GITHUB_CLIENT_SECRET not set")
+    val clientId = System.getenv("GITHUB_CLIENT_ID") ?: ""//error("GITHUB_CLIENT_ID not set")
+    val clientSecret = System.getenv("GITHUB_CLIENT_SECRET") ?: ""//error("GITHUB_CLIENT_SECRET not set")
 
     install(CallLogging) {
         level = Level.INFO
