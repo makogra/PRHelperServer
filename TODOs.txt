@@ -1,2 +1,10 @@
 TODO:
     - add listener for closing pull request
+    - verify if user is registered
+    -  fetch diff
+    -  wrap for massage to GPT API
+    -  recive and parse the response
+    -  save response to db
+    -  notify user
+
+TODO: OpenAiMessage.kt add @serialName's
