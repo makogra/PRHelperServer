@@ -1,16 +1,49 @@
 package pl.pietrzak.services
 
-import pl.pietrzak.webhook.GitHubPullRequestPayload
+import io.ktor.client.*
+import io.ktor.client.request.*
+import io.ktor.client.request.headers
+import io.ktor.client.statement.*
+import io.ktor.http.*
+import pl.pietrzak.entity.github.PRPayload
 
 object WebhookHandlerService {
-    suspend fun handlePullRequest(payload: GitHubPullRequestPayload) {
+
+    var client: HttpClient? = null
+
+    fun setClient(client: HttpClient) {
+        this.client = client
+    }
+
+
+    suspend fun handlePullRequest(payload: PRPayload): String {
+        //TODO verify if user is registered
+
+        // fetch diff
+        // wrap for massage to GPT API
+        // recive and parse the response
+        // save response to db
+        // notify user
+
         val pr = payload.pullRequest
         val repo = payload.repository
 
-        println("Received PR: ${pr.id} by ${pr.head.ref} on ${repo.name}")
+        println("Received PR: ${pr.id} by ${pr.user.login} on ${repo.name}")
 
-        // If needed, fetch PR diff with a service:
-        // val diff = githubApiService.fetchPullRequestDiff(repo.owner.login, repo.name, pr.number, accessToken)
-        // println(diff)
+        val diff = fetchPullRequestDiff(diffUrl = pr.diffUrl)
+
+
+        return diff
+    }
+
+    private suspend fun fetchPullRequestDiff(diffUrl: String, accessToken: String? = null): String {
+        return client!!.get(diffUrl) {
+            headers {
+                if (accessToken != null) {
+                    append(HttpHeaders.Authorization, "Bearer $accessToken")
+                }
+                append(HttpHeaders.Accept, "application/vnd.github.v3.diff")
+            }
+        }.bodyAsText()
     }
 }
