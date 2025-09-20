@@ -7,15 +7,9 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import pl.pietrzak.entity.github.PRPayload
 
-object WebhookHandlerService {
-
-    var client: HttpClient? = null
-
-    fun setClient(client: HttpClient) {
-        this.client = client
-    }
-
-
+class WebhookHandlerService (
+    private var client: HttpClient
+) {
     suspend fun handlePullRequest(payload: PRPayload): String {
         //TODO verify if user is registered
 
@@ -37,7 +31,7 @@ object WebhookHandlerService {
     }
 
     private suspend fun fetchPullRequestDiff(diffUrl: String, accessToken: String? = null): String {
-        return client!!.get(diffUrl) {
+        return client.get(diffUrl) {
             headers {
                 if (accessToken != null) {
                     append(HttpHeaders.Authorization, "Bearer $accessToken")

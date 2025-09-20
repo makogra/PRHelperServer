@@ -66,6 +66,11 @@ fun Application.mainModule() {
         }
     }
 
+    httpClient.monitor.subscribe(ApplicationStopping) {
+        httpClient.close()
+        log.info("HttpClient closed.")
+    }
+
     install(CORS) {
         anyHost()
         allowHeader(HttpHeaders.ContentType)
@@ -74,10 +79,8 @@ fun Application.mainModule() {
         allowMethod(HttpMethod.Post)
     }
 
-    WebhookHandlerService.setClient(httpClient)
-
+    val webhookHandlerService = WebhookHandlerService(httpClient)
     val gitHubApiService = GitHubApiService(clientId, clientSecret, httpClient)
-//    val webHookHandlerService = new WebhookHandlerService(gitHubApiService)
 
     routing {
         get("/") {
@@ -104,22 +107,19 @@ fun Application.mainModule() {
             val payload = call.receiveText()
 
             println("payload = $payload")
-
             if (event == "pull_request") {
                 //TODO revert if for early return
                 val json = Json { ignoreUnknownKeys = true }
                 val prEvent = json.decodeFromString<PRPayload>(payload)
 
                 if (prEvent.action == "opened" || prEvent.action == "synchronize") {
-                    val diffFile = WebhookHandlerService.handlePullRequest(prEvent)
+                    val diffFile = webhookHandlerService.handlePullRequest(prEvent)
                     val response = GPTService().sendToGPT(file = diffFile)
 
                     println("Response: ${response.choices.firstOrNull()?.message?.content}")
 //                    response.choices.firstOrNull()?.message?.content?
-
                 }
             }
-
             call.respond(HttpStatusCode.OK)
         }
     }
