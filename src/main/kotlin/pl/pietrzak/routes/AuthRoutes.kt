@@ -1,15 +1,28 @@
-package pl.pietrzak.auth
+package pl.pietrzak.routes
 
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
-import io.ktor.http.*
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.request.*
-import io.ktor.serialization.kotlinx.json.*
-import io.ktor.server.sessions.*
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.get
+import io.ktor.client.request.headers
+import io.ktor.client.request.parameter
+import io.ktor.client.request.post
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
+import io.ktor.serialization.kotlinx.json.json
+import io.ktor.server.response.respond
+import io.ktor.server.response.respondRedirect
+import io.ktor.server.response.respondText
+import io.ktor.server.routing.Routing
+import io.ktor.server.routing.get
+import io.ktor.server.sessions.clear
+import io.ktor.server.sessions.get
+import io.ktor.server.sessions.sessions
+import io.ktor.server.sessions.set
+import pl.pietrzak.auth.AuthSession
+import pl.pietrzak.auth.GitHubTokenResponse
+import pl.pietrzak.auth.GitHubUserResponse
 
 fun Routing.githubOAuthRoutes() {
     val clientId = System.getenv("GITHUB_CLIENT_ID") ?: error("Missing GITHUB_CLIENT_ID")
