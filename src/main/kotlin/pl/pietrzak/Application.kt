@@ -14,6 +14,9 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
 import org.slf4j.event.Level
+import pl.pietrzak.database.DatabaseFactory
+import pl.pietrzak.database.repositories.ConversationRepository
+import pl.pietrzak.services.GitHubApiService
 import pl.pietrzak.routes.githubOAuthRoutes
 import pl.pietrzak.routes.githubWebhookRoutes
 import pl.pietrzak.services.WebhookHandlerService
@@ -35,6 +38,12 @@ fun main2() {
 }
 
 fun Application.mainModule() {
+    val clientId = System.getenv("GITHUB_CLIENT_ID") ?: ""//error("GITHUB_CLIENT_ID not set")
+    val clientSecret = System.getenv("GITHUB_CLIENT_SECRET") ?: ""//error("GITHUB_CLIENT_SECRET not set")
+
+    DatabaseFactory.init()
+    val conversationRepository = ConversationRepository()
+
     install(CallLogging) {
         level = Level.INFO
     }
