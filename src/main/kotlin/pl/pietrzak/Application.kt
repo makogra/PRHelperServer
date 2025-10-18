@@ -115,8 +115,15 @@ fun Application.mainModule() {
                 if (prEvent.action == "opened" || prEvent.action == "synchronize") {
                     val diffFile = webhookHandlerService.handlePullRequest(prEvent)
                     val response = GPTService().sendToGPT(file = diffFile)
-
-                    println("Response: ${response.choices.firstOrNull()?.message?.content}")
+                    response.recommendations.forEach { recommendation ->
+                        println("recommendation = ${recommendation}")
+                        println("------------------")
+                        println("recommendation.category = ${recommendation.category}")
+                        println("recommendation.level = ${recommendation.level}")
+                        println("recommendation.change = ${recommendation.change}")
+                        println("recommendation.comment = ${recommendation.comment}")
+                        }
+//                    println("Response: ${response.choices.firstOrNull()?.message?.content}")
 //                    response.choices.firstOrNull()?.message?.content?
                 }
             }

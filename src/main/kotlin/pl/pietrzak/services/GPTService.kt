@@ -9,9 +9,14 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import pl.pietrzak.openAi.OpenAiMessage
 import pl.pietrzak.openAi.OpenAiRequest
 import pl.pietrzak.openAi.OpenAiResponse
+import pl.pietrzak.openAi.RecommendationsResponse
 
 class GPTService {
 
@@ -32,7 +37,7 @@ class GPTService {
             3. **Explanation**: (optional, depending on the issue, e.g., skip for renaming) Provide a brief explanation of why this change is necessary.
         """.trimIndent(),
         file: String,
-    ): OpenAiResponse {
+    ): RecommendationsResponse {
 
 
         try {
@@ -40,7 +45,7 @@ class GPTService {
             val orgId = System.getenv("OPEN_AI_ORGANIZATION_ID")
             val projectId = System.getenv("OPEN_AI_PROJECT_ID")
 
-            val request = OpenAiRequest(
+            val requestOld = OpenAiRequest(
                 model = "gpt-4o-mini",
                 messages = listOf(
                     OpenAiMessage(role = "developer", content = command),
@@ -49,7 +54,42 @@ class GPTService {
                 temperature = 0.7
             )
 
-            val response: HttpResponse = client.post("https://api.openai.com/v1/chat/completions") {
+            val request = mapOf(
+                "model" to "gpt-4.1-mini",
+                "input" to listOf(
+                    mapOf(
+                        "role" to "user",
+                        "content" to "Here is the code diff:\n$file\n\nReturn recommendations as JSON."
+                    )
+                ),
+                "response_format" to mapOf(
+                    "type" to "json_schema",
+                    "json_schema" to mapOf(
+                        "name" to "code_review",
+                        "schema" to mapOf(
+                            "type" to "object",
+                            "properties" to mapOf(
+                                "recommendations" to mapOf(
+                                    "type" to "array",
+                                    "items" to mapOf(
+                                        "type" to "object",
+                                        "properties" to mapOf(
+                                            "category" to mapOf("type" to "string"),
+                                            "level" to mapOf("type" to "integer"),
+                                            "change" to mapOf("type" to "string"),
+                                            "comment" to mapOf("type" to "string")
+                                        ),
+                                        "required" to listOf("category", "level", "change", "comment")
+                                    )
+                                )
+                            ),
+                            "required" to listOf("recommendations")
+                        )
+                    )
+                )
+            )
+
+            val response: HttpResponse = client.post("https://api.openai.com/v1/responses") {
                 contentType(ContentType.Application.Json)
                 headers {
                     append(HttpHeaders.Authorization, "Bearer $apiKey")
@@ -60,11 +100,20 @@ class GPTService {
             }
 
             if (response.status.isSuccess()) {
-                return response.body<OpenAiResponse>()
+                val apiResponse = response.body<JsonObject>()
+                val outputText = apiResponse["output"]!!
+                    .jsonArray[0].jsonObject["content"]!!
+                    .jsonArray[0].jsonObject["text"]!!
+                    .jsonPrimitive.content
+                return Json.decodeFromString<RecommendationsResponse>(outputText)
+//                return response.body<RecommendationsResponse>()
             } else {
                 val errorBody: String = response.bodyAsText()
                 throw Exception("API Error: ${response.status} - $errorBody")
             }
+        } catch (e: NullPointerException) {
+            println("Open AI response is in different format than expected.")
+            throw e
         } catch (e: Exception) {
             throw Exception("Failed to call OpenAI API: ${e.message}")
         } finally {
