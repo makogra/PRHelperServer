@@ -3,7 +3,6 @@ package pl.pietrzak
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.http.*
-import io.ktor.http.ContentType.Application.Json
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -18,7 +17,8 @@ import kotlinx.serialization.json.Json
 import org.slf4j.event.Level
 import pl.pietrzak.services.GitHubApiService
 import pl.pietrzak.services.WebhookHandlerService
-import pl.pietrzak.webhook.GitHubPullRequestPayload
+import pl.pietrzak.entity.github.PRPayload
+import pl.pietrzak.services.GPTService
 
 
 fun main(args: Array<String>) {
@@ -66,6 +66,11 @@ fun Application.mainModule() {
         }
     }
 
+    httpClient.monitor.subscribe(ApplicationStopping) {
+        httpClient.close()
+        log.info("HttpClient closed.")
+    }
+
     install(CORS) {
         anyHost()
         allowHeader(HttpHeaders.ContentType)
@@ -74,6 +79,7 @@ fun Application.mainModule() {
         allowMethod(HttpMethod.Post)
     }
 
+    val webhookHandlerService = WebhookHandlerService(httpClient)
     val gitHubApiService = GitHubApiService(clientId, clientSecret, httpClient)
 
     routing {
@@ -100,14 +106,27 @@ fun Application.mainModule() {
             val event = call.request.header("X-GitHub-Event")
             val payload = call.receiveText()
 
+            println("payload = $payload")
             if (event == "pull_request") {
-                val prEvent = kotlinx.serialization.json.Json.decodeFromString<GitHubPullRequestPayload>(payload)
+                //TODO revert if for early return
+                val json = Json { ignoreUnknownKeys = true }
+                val prEvent = json.decodeFromString<PRPayload>(payload)
 
                 if (prEvent.action == "opened" || prEvent.action == "synchronize") {
-                    WebhookHandlerService.handlePullRequest(prEvent)
+                    val diffFile = webhookHandlerService.handlePullRequest(prEvent)
+                    val response = GPTService().sendToGPT(file = diffFile)
+                    response.recommendations.forEach { recommendation ->
+                        println("recommendation = ${recommendation}")
+                        println("------------------")
+                        println("recommendation.category = ${recommendation.category}")
+                        println("recommendation.level = ${recommendation.level}")
+                        println("recommendation.change = ${recommendation.change}")
+                        println("recommendation.comment = ${recommendation.comment}")
+                        }
+//                    println("Response: ${response.choices.firstOrNull()?.message?.content}")
+//                    response.choices.firstOrNull()?.message?.content?
                 }
             }
-
             call.respond(HttpStatusCode.OK)
         }
     }

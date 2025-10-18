@@ -13,7 +13,9 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
+
+//import org.junit.jupiter.api.Test
 
 class GitHubApiServiceTest {
 
