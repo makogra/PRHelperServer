@@ -1,0 +1,17 @@
+{
+  "model": "gpt-4o-mini",
+  "input": [
+    {
+      "role": "user",
+      "content": "Here is the code diff:\n{{CODE}}\n\nReturn recommendations as JSON."
+    }
+  ],
+  "text": {
+    "format": {
+      "type": "json_schema",
+      "name": "PRHelperResponse",
+      "strict": true,
+      "schema": "{{CODE_REVIEW_SCHEMA}}"
+    }
+  }
+}
