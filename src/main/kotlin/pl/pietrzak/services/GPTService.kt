@@ -8,15 +8,9 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonArray
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
-import pl.pietrzak.openAi.OpenAiMessage
-import pl.pietrzak.openAi.OpenAiRequest
-import pl.pietrzak.openAi.OpenAiResponse
+import kotlinx.serialization.json.*
 import pl.pietrzak.openAi.RecommendationsResponse
+import java.io.File
 
 class GPTService {
 
@@ -45,50 +39,7 @@ class GPTService {
             val orgId = System.getenv("OPEN_AI_ORGANIZATION_ID")
             val projectId = System.getenv("OPEN_AI_PROJECT_ID")
 
-            val requestOld = OpenAiRequest(
-                model = "gpt-4o-mini",
-                messages = listOf(
-                    OpenAiMessage(role = "developer", content = command),
-                    OpenAiMessage(role = "user", content = "Here is the code to review:\n$file")
-                ),
-                temperature = 0.7
-            )
-
-            val request = mapOf(
-                "model" to "gpt-4.1-mini",
-                "input" to listOf(
-                    mapOf(
-                        "role" to "user",
-                        "content" to "Here is the code diff:\n$file\n\nReturn recommendations as JSON."
-                    )
-                ),
-                "response_format" to mapOf(
-                    "type" to "json_schema",
-                    "json_schema" to mapOf(
-                        "name" to "code_review",
-                        "schema" to mapOf(
-                            "type" to "object",
-                            "properties" to mapOf(
-                                "recommendations" to mapOf(
-                                    "type" to "array",
-                                    "items" to mapOf(
-                                        "type" to "object",
-                                        "properties" to mapOf(
-                                            "category" to mapOf("type" to "string"),
-                                            "level" to mapOf("type" to "integer"),
-                                            "change" to mapOf("type" to "string"),
-                                            "comment" to mapOf("type" to "string")
-                                        ),
-                                        "required" to listOf("category", "level", "change", "comment")
-                                    )
-                                )
-                            ),
-                            "required" to listOf("recommendations")
-                        )
-                    )
-                )
-            )
-
+            val request = buildRequest(file)
             val response: HttpResponse = client.post("https://api.openai.com/v1/responses") {
                 contentType(ContentType.Application.Json)
                 headers {
@@ -96,7 +47,7 @@ class GPTService {
                     append("OpenAI-Organization", orgId)
                     append("OpenAI-Project", projectId)
                 }
-                setBody(request)
+                setBody(Json.encodeToJsonElement(request))
             }
 
             if (response.status.isSuccess()) {
@@ -106,7 +57,6 @@ class GPTService {
                     .jsonArray[0].jsonObject["text"]!!
                     .jsonPrimitive.content
                 return Json.decodeFromString<RecommendationsResponse>(outputText)
-//                return response.body<RecommendationsResponse>()
             } else {
                 val errorBody: String = response.bodyAsText()
                 throw Exception("API Error: ${response.status} - $errorBody")
@@ -115,9 +65,46 @@ class GPTService {
             println("Open AI response is in different format than expected.")
             throw e
         } catch (e: Exception) {
+            e.printStackTrace()
             throw Exception("Failed to call OpenAI API: ${e.message}")
         } finally {
             client.close()
         }
+    }
+
+    fun loadJson(path: String): JsonObject =
+        Json.parseToJsonElement(File(path).readText()).jsonObject
+
+    fun buildRequest(fileContent: String): JsonObject {
+        val requestTemplate = loadJson("src/main/resources/json_requests/code_review_request.json")
+        val schema = loadJson("src/main/resources/json_schemas/code_review_schema.json")
+
+        val input = requestTemplate["input"]!!.jsonArray.map { item ->
+            val content = item.jsonObject["content"]!!.jsonPrimitive.content
+                .replace("{{CODE}}", fileContent)
+            buildJsonObject {
+                put("role", item.jsonObject["role"]!!.jsonPrimitive.content)
+                put("content", content)
+            }
+        }
+
+        val responseFormat = buildJsonObject {
+            put("type", "json_schema")
+            put("strict", true)
+            put("name", "PRHelperResponse")
+            put("schema", schema)
+        }
+
+        val text = buildJsonObject {
+            put("format", responseFormat)
+        }
+
+        return buildJsonObject {
+            put("model", requestTemplate["model"]!!.jsonPrimitive.content)
+            put("input", JsonArray(input))
+            put("text", text)
+        }
+
+        //TODO make config fully in json
     }
 }

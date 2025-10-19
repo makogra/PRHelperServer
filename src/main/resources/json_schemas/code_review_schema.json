@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "properties": {
+    "recommendations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "category": { "type": "string" },
+          "level": { "type": "integer" },
+          "change": { "type": "string" },
+          "comment": { "type": "string" }
+        },
+        "required": ["category", "level", "change", "comment"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["recommendations"],
+  "additionalProperties": false
+}
