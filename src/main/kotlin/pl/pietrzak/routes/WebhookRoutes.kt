@@ -23,7 +23,7 @@ fun Route.githubWebhookRoutes(webhookHandlerService: WebhookHandlerService) {
             if (prEvent.action == "opened" || prEvent.action == "synchronize") {
                 val diffFile = webhookHandlerService.handlePullRequest(prEvent)
                 val response = GPTService().sendToGPT(file = diffFile)
-                response.recommendations.forEach { recommendation -> println("recommendation = ${recommendation}") }
+                response.recommendations.forEach { recommendation -> println("recommendation = $recommendation") }
             }
         }
         call.respond(HttpStatusCode.OK)
