@@ -9,7 +9,7 @@ import pl.pietrzak.database.tables.Users
 import java.util.*
 
 class UserRepository {
-    fun create(login: String, portalName: String, iconUrl: String?): UUID {
+    fun create(login: String, portalName: String, iconUrl: String?): Int {
         return transaction {
             Users.insertAndGetId {
                 it[Users.login] = login

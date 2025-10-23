@@ -6,10 +6,9 @@ import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.transactions.transaction
 import pl.pietrzak.database.tables.Repositories
 import pl.pietrzak.database.tables.RepositoryReviewers
-import java.util.UUID
 
 class RepositoryRepository {
-    fun create(name: String, portalName: String, url: String, creatorId: UUID): Int {
+    fun create(name: String, portalName: String, url: String, creatorId: Int): Int {
         return transaction {
             Repositories.insertAndGetId {
                 it[Repositories.name] = name
@@ -21,7 +20,7 @@ class RepositoryRepository {
         }
     }
 
-    fun addReviewer(repositoryId: Int, userId: UUID) = transaction {
+    fun addReviewer(repositoryId: Int, userId: Int) = transaction {
         RepositoryReviewers.insert {
             it[repository] = repositoryId
             it[user] = userId

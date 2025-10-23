@@ -5,6 +5,7 @@ import com.zaxxer.hikari.HikariDataSource
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
+import pl.pietrzak.database.tables.Conversations
 
 object DatabaseFactory {
     fun init() {
