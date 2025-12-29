@@ -37,6 +37,18 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("io.ktor:ktor-server-config-yaml")
 
+    // JDBC Driver
+    implementation("org.postgresql:postgresql:42.7.3")
+
+    // Exposed ORM (recommended for Kotlin)
+    implementation("org.jetbrains.exposed:exposed-core:0.55.0")
+    implementation("org.jetbrains.exposed:exposed-dao:0.55.0")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.55.0")
+    implementation("org.jetbrains.exposed:exposed-kotlin-datetime:0.55.0")
+
+    // Connection Pool
+    implementation("com.zaxxer:HikariCP:5.1.0")
+
     // Testing
     testImplementation(kotlin("test")) // Includes KotlinTest (uses JUnit)
     testImplementation("org.apache.httpcomponents:httpclient")
